@@ -1,0 +1,16 @@
+{
+  "name": "Traducteur vocal — Allemand / Anglais / Français",
+  "short_name": "Traducteur vocal",
+  "description": "Traduction vocale allemand/anglais vers français, avec un dictionnaire de vocabulaire pour préparer un séjour au pair.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F6F4EA",
+  "theme_color": "#1F4C3F",
+  "lang": "fr",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
