@@ -1,9 +1,11 @@
-// Service worker minimal : met en cache la page et les icônes pour un
-// chargement instantané et un accès hors ligne au dictionnaire. Les appels
-// de traduction (MyMemory, etc.) passent toujours par le réseau tel quel —
-// ce service worker ne les intercepte pas.
+// Service worker : met en cache les icônes et le manifest pour un accès
+// hors ligne, mais va TOUJOURS chercher la page principale (index.html) sur
+// le réseau en premier, pour ne jamais servir une version obsolète tant que
+// l'appareil a une connexion. Le cache ne sert de secours que hors ligne.
+// Les appels de traduction (MyMemory, etc.) passent toujours par le réseau
+// tel quel — ce service worker ne les intercepte pas.
 
-const CACHE_NAME = 'traducteur-vocal-v1';
+const CACHE_NAME = 'traducteur-vocal-v2';
 const APP_SHELL = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function(event){
@@ -24,10 +26,25 @@ self.addEventListener('activate', function(event){
 
 self.addEventListener('fetch', function(event){
   const url = new URL(event.request.url);
-  // Seules les ressources de l'app elle-même passent par le cache ;
-  // tout le reste (API de traduction) va toujours directement au réseau.
   if(url.origin !== self.location.origin){ return; }
 
+  const isPage = event.request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname.endsWith('/');
+
+  if(isPage){
+    // Réseau d'abord : garantit la dernière version à chaque visite en ligne.
+    event.respondWith(
+      fetch(event.request).then(function(response){
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then(function(cache){ cache.put(event.request, copy); });
+        return response;
+      }).catch(function(){
+        return caches.match(event.request); // secours hors ligne uniquement
+      })
+    );
+    return;
+  }
+
+  // Icônes, manifest : cache d'abord, c'est plus rapide et ça change rarement.
   event.respondWith(
     caches.match(event.request).then(function(cached){
       return cached || fetch(event.request).then(function(response){
