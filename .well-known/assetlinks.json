@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.rakotoaritovo_art.twa",
+        "sha256_cert_fingerprints": ["9A:DE:E1:FD:AA:1A:54:DE:A5:CB:BD:A2:4E:63:FE:BF:13:60:70:D5:3D:F3:13:B4:A5:9C:7B:44:C5:06:D3:B7"]
+      }
+    }]
